@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import "./assets/style.css";
 import quizService from "./quizService";
 import QuestionBox from "./components/questionBox";
+import Result from "./components/result"
 
 class QuizBee extends Component {
 
@@ -33,6 +34,14 @@ class QuizBee extends Component {
         this.getQuestions();
     }
 
+    playAgain = () => {
+        this.getQuestions();
+        this.setState({
+            score: 0,
+            responses: 0
+        });
+    }
+
     render() {
 
         return (
@@ -51,7 +60,7 @@ class QuizBee extends Component {
                     )
                 }
                 {
-                    this.state.responses === 5 ? (<h3>{this.state.score}</h3>) : null
+                    this.state.responses === 5 ? (<Result score={this.state.score} playAgain={this.playAgain} />) : null
                 }
             </div>
         );
