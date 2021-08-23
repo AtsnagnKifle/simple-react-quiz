@@ -2,11 +2,14 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import "./assets/style.css";
 import quizService from "./quizService";
+import QuestionBox from "./components/questionBox";
 
 class QuizBee extends Component {
 
     state = {
-        questionBank: []
+        questionBank: [],
+        score: 0,
+        responses: 0,
     };
 
     getQuestions = () => {
@@ -15,6 +18,15 @@ class QuizBee extends Component {
                 questionBank: question
             });
         });
+    }
+
+    computeAnswer(answer, correctAnswer) {
+        if (answer === correctAnswer) {
+            this.setState(
+                { score: this.state.score + 1 }
+            );
+        }
+        this.setState({ responses: this.state.responses < 5 ? this.state.responses + 1 : 5 });
     }
 
     componentDidMount() {
@@ -27,7 +39,20 @@ class QuizBee extends Component {
             <div className="container">
 
                 <div className="title">QuizBee</div>
-                {this.state.questionBank.length > 0 && this.state.questionBank.map(({ question, answers, correct, questionId }) => <h4>{question}</h4>)}
+                {
+                    this.state.questionBank.length > 0 && this.state.responses < 5 && this.state.questionBank.map(
+                        ({ question, answers, correct, questionId }) =>
+                            (<QuestionBox
+                                question={question}
+                                options={answers}
+                                key={questionId}
+                                selected={answers => this.computeAnswer(answers, correct)}
+                            />)
+                    )
+                }
+                {
+                    this.state.responses === 5 ? (<h3>{this.state.score}</h3>) : null
+                }
             </div>
         );
 
